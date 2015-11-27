@@ -31,7 +31,11 @@ public class ghostMovement : MonoBehaviour
     }
     public void resetGhost()
     {
-        dest = startingPosition;
+        GetComponent<Rigidbody2D>().MovePosition(startingPosition);
+        gameObject.transform.position = startingPosition;
+        dest = transform.position;
+        currentDirection = startingDirection;
+        ghostActive = true;
     }
     public void changeDirection(List<Vector2> validDirections)
     {

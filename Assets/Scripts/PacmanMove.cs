@@ -4,10 +4,12 @@ using System.Collections;
 public class PacmanMove : MonoBehaviour {
     public float speed = 0.4f;
     Vector2 dest = Vector2.zero;
+    private Vector2 startingPosition;
     private bool isPoweredUp = false;
-    private gameHelper GameHelper;
+    
     void Start() {
         dest = transform.position;
+        startingPosition = transform.position;
     }
 
   void FixedUpdate() {
@@ -29,7 +31,7 @@ public class PacmanMove : MonoBehaviour {
     GetComponent<Animator>().SetFloat("DirX", dir.x);
     GetComponent<Animator>().SetFloat("DirY", dir.y);
 
-}
+    }
 
     bool valid(Vector2 dir) {
         // Cast Line from 'next to Pac-Man' to 'Pac-Man'
@@ -50,10 +52,18 @@ public class PacmanMove : MonoBehaviour {
             }
             //otherwise destroy pac man
             else
-                Destroy(gameObject);
-                GameHelper.stopAllGhosts();
+            {
+                gameObject.SetActive(false);
+                gameHelper.stopAllGhosts();
+            }
         }
     }
-
+    public void resetPacman()
+    {
+        GetComponent<Rigidbody2D>().MovePosition(startingPosition);
+        gameObject.transform.position = startingPosition;
+        dest = transform.position;
+        gameObject.SetActive(true);
+    }
 
 }
