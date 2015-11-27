@@ -4,58 +4,68 @@ using System.Collections.Generic;
 public class ghostMovement : MonoBehaviour
 {
     int cur = 0;
-
+    public Vector2 startingDirection;
+    private Vector2 currentDirection = Vector2.up;
     public float speed = 0.3f;
-    private string _lastAxis;
-    private Vector2 _lastDirection;
-    private Vector2 _lastXDirection;
-    private Vector2 _lastYDirection;
-    private bool invalid = false;
+    private bool ghostActive = true;
+
     Vector2 dest = Vector2.zero;
-     void Start()
+    void Start()
     {
-        _lastAxis= "vertical";
-        _lastYDirection = Vector2.up;
-        _lastXDirection = Vector2.left;
-        _lastDirection = _lastYDirection;
-        dest = (Vector2)transform.position + (_lastDirection);
+        currentDirection = startingDirection;
+        dest = (Vector2)transform.position + (currentDirection);
     }
     void FixedUpdate()
     {
-        Vector2 p = Vector2.MoveTowards(transform.position, dest, speed);
-        GetComponent<Rigidbody2D>().MovePosition(p);
-        dest = (Vector2)transform.position + (_lastDirection);
-
-    }
-
-    private void changeDirection()
-    {
-        
-        System.Random positiveOrNegative = new System.Random();
-        int rand = positiveOrNegative.Next(0, 1) * 2 - 1;
-        Debug.Log("Last Direction " + _lastAxis);
-        if (_lastAxis == "vertical")
+        if (ghostActive)
         {
-             _lastXDirection = rand * _lastXDirection;
-            _lastAxis = "horizontal";
-            _lastDirection =  _lastXDirection;
-            dest = (Vector2)transform.position + (_lastDirection);
+            Vector2 p = Vector2.MoveTowards(transform.position, dest, speed);
+            GetComponent<Rigidbody2D>().MovePosition(p);
+            dest = (Vector2)transform.position + (currentDirection);
         }
-        else
+    }
+    public void stopGhost()
+    {
+        ghostActive = false;
+    }
+    public void changeDirection(List<Vector2> validDirections)
+    {
+        if (validDirections.Count > 0)
         {
-             _lastYDirection = rand * _lastYDirection;
-            _lastAxis = "vertical";
-            _lastDirection = _lastYDirection;
-            dest = (Vector2)transform.position + ( _lastDirection);
+            System.Random rand = new System.Random();
+            int newDirection = rand.Next(0, validDirections.Count);
+            // So if changing direction would make the ghost do a 180, try again.
+            if (validDirections[newDirection] == (-1 * currentDirection))
+            {
+                validDirections.RemoveAt(newDirection);
+                changeDirection(validDirections);
+            }
+            else
+            {
+                //TODO: Add some logic to figure out where pacman is in the maze, and give the best direction to catch him a higher weight
+                currentDirection = validDirections[newDirection];
+                dest = (Vector2)transform.position + validDirections[newDirection];
+            }
         }
     }
     void OnTriggerEnter2D(Collider2D co)
     {
-        if (co.CompareTag("level"))
+        if (co.CompareTag("decisionPoint"))
         {
-            Debug.Log("Hit the level");
-            dest = (Vector2)transform.position + (Vector2.zero);
-            changeDirection();
+            GameObject decisionPoint = co.transform.gameObject;
+            DecisionCollider decisionInfo = decisionPoint.GetComponent<DecisionCollider>();
+            List<Vector2> validDirections = new List<Vector2>();
+            if (decisionInfo.upValid)
+                validDirections.Add(Vector2.up);
+            if (decisionInfo.downValid)
+                validDirections.Add(Vector2.down);
+            if (decisionInfo.leftValid)
+                validDirections.Add(Vector2.left);
+            if (decisionInfo.rightValid)
+                validDirections.Add(Vector2.right);
+            changeDirection(validDirections);
         }
     }
+   
+
 }

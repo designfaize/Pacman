@@ -7,7 +7,7 @@ public class pellet : MonoBehaviour {
     void Start()
     {
     }
-    void OnTriggerEnter(Collider co) {
+    void OnTriggerEnter2D(Collider2D co) {
         if (co.name == "pacman")
         {
             score.addToScore("pellet");

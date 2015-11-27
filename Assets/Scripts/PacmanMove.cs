@@ -4,7 +4,7 @@ using System.Collections;
 public class PacmanMove : MonoBehaviour {
     public float speed = 0.4f;
     Vector2 dest = Vector2.zero;
-
+    private bool isPoweredUp = false;
     void Start() {
         dest = transform.position;
     }
@@ -12,7 +12,7 @@ public class PacmanMove : MonoBehaviour {
   void FixedUpdate() {
     // Move closer to Destination
     Vector2 p = Vector2.MoveTowards(transform.position, dest, speed);
-    GetComponent<Rigidbody>().MovePosition(p);
+    GetComponent<Rigidbody2D>().MovePosition(p);
     // Check for Input if not moving
         if ((Input.GetKey(KeyCode.UpArrow) || Input.GetAxis("Verticalj") > .5) && valid(Vector2.up))
             dest = (Vector2)transform.position + Vector2.up;
@@ -36,4 +36,23 @@ public class PacmanMove : MonoBehaviour {
         RaycastHit2D hit = Physics2D.Linecast(pos + dir, pos);
         return (hit.collider == GetComponent<Collider2D>());
     }
+    void OnTriggerEnter2D(Collider2D co)
+    {
+        if(co.CompareTag("ghost"))
+        {
+            // If pacman is powered up, destroy the ghost
+            if (isPoweredUp)
+            {
+                // TODO:  Handle turning the ghost invisible.
+                // for now just destroy the ghost
+                Destroy(co.transform.gameObject);
+            }
+            //otherwise destroy pac man
+            else
+                Destroy(gameObject);
+                gameHelper.stopAllGhosts();
+        }
+    }
+
+
 }

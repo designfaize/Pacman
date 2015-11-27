@@ -68,7 +68,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\DecisionCollider.cs" />
     <Compile Include="Assets\Scripts\PacmanMove.cs" />
+    <Compile Include="Assets\Scripts\gameHelper.cs" />
     <Compile Include="Assets\Scripts\ghostMovement.cs" />
     <Compile Include="Assets\Scripts\pellet.cs" />
     <Compile Include="Assets\Scripts\score.cs" />
