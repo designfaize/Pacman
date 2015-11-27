@@ -4,7 +4,9 @@ using System.Collections.Generic;
 
 public class gameHelper : MonoBehaviour {
     public List<GameObject> ghosts;
+    public GameObject playAgainButton;
     private static List<GameObject> _ghosts;
+    private static int lives = 0;
 	// Use this for initialization
 	void Start () {
         _ghosts = ghosts;
@@ -14,11 +16,17 @@ public class gameHelper : MonoBehaviour {
 	void Update () {
 	
 	}
-    public static void stopAllGhosts()
+    public void stopAllGhosts()
     {
         foreach (GameObject ghost in _ghosts)
         {
-            ghost.GetComponent<ghostMovement>().stopGhost();
+            ghostMovement ghostController = ghost.GetComponent<ghostMovement>();
+            ghostController.stopGhost();
+            ghostController.resetGhost();
+        }
+        if (lives == 0)
+        {
+            playAgainButton.SetActive(true);
         }
     }
 }

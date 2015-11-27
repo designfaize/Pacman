@@ -8,10 +8,11 @@ public class ghostMovement : MonoBehaviour
     private Vector2 currentDirection = Vector2.up;
     public float speed = 0.3f;
     private bool ghostActive = true;
-
+    private Vector2 startingPosition;
     Vector2 dest = Vector2.zero;
     void Start()
     {
+        startingPosition = (Vector2)transform.position;
         currentDirection = startingDirection;
         dest = (Vector2)transform.position + (currentDirection);
     }
@@ -27,6 +28,10 @@ public class ghostMovement : MonoBehaviour
     public void stopGhost()
     {
         ghostActive = false;
+    }
+    public void resetGhost()
+    {
+        dest = startingPosition;
     }
     public void changeDirection(List<Vector2> validDirections)
     {

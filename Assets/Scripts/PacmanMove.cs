@@ -5,6 +5,7 @@ public class PacmanMove : MonoBehaviour {
     public float speed = 0.4f;
     Vector2 dest = Vector2.zero;
     private bool isPoweredUp = false;
+    private gameHelper GameHelper;
     void Start() {
         dest = transform.position;
     }
@@ -50,7 +51,7 @@ public class PacmanMove : MonoBehaviour {
             //otherwise destroy pac man
             else
                 Destroy(gameObject);
-                gameHelper.stopAllGhosts();
+                GameHelper.stopAllGhosts();
         }
     }
 
